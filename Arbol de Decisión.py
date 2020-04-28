@@ -52,7 +52,7 @@ micción = input("Problemas con la micción? ")
 defecación = input("Problemas con defeccacion? ")
 
 # Hospitalizaciones y Cirugías#
-cx = input("Se ha sometido a Cirugías? ")
+cx = input("Se ha sometido a cirugías? ")
 hosp = input("Ha estado hospitalizado en los últimos 3 meses? ")
 atb = input("Ha tenido consumo de ATB en los ultimos 3 meses ? ")
 
@@ -96,29 +96,39 @@ viajes = input("Tuvo viajes al extranjero con alta prevalencia de COVID? ")
 
 # Clasificador Nº2 de Exposicion#
 
+# Separar y priorizar (1)
 if lock_down == "s":
     count += 1
 else:
     count += 0
+# Priorizar (3)
 if contacto == "s":
     count += 1
 else:
     count += 0
+# prioridad (1)
 if viajes == "s":
     count += 1
 else:
     count += 0
 count_exposicion = count
 
+#
+
 # Clasificador Nº3 de Riesgo#
+# (3)
 if edad >= 65:
     count += 1
 else:
     count -= 1
+# separar y cada 1
 if tbq == "s":
     count += 1
 else:
     count -= 1
+
+# cada uno suma 1
+#
 if ecnt == "s":
     count += 1
 else:
@@ -126,7 +136,8 @@ else:
 count_riesgo = count
 
 # Probabilidad Pre Test#
-probabilidad_pretest = float(count_riesgo) * float(count_exposicion)
+probabilidad_pretest_riesgo = float(count_riesgo)
+probabilidad_pretest_exp = float(count_exposicion)
 
 # Muestra la probabilidad pre test#
 # Esto corresponde al riesgo de exposición y riesgo personal combinados#
@@ -146,7 +157,7 @@ print(" ")
 
 # Clasificador Nº1 Urgencias#
 urg1 = input("tiene Dolor toráxico? ")
-urg2 = input("tiene Disnea? ")
+urg2 = input("tiene Disnea? ") # Fuzzy mayor a 5
 urg3 = input("Tiene compromiso de conciencia ? ")
 urg4 = input("Tiene coloración azul de cara y labios ? ")
 if urg1 == "s" or urg2 == "s" or urg3 == "s" or urg4 == "s":
@@ -184,6 +195,12 @@ print("Continue respondiendo ")
 print("Ahora le preguntaremos por síntnomas específicos")
 print("---------------------------------------------------")
 
+
+
+
+#TODO:
+
+
 # Input Sintomas Específicos#
 e = input("tiene Fiebre sobre 38ºC? ")
 k = input("tiene Tos ? ")
@@ -194,6 +211,7 @@ if probabilidad_pretest > 3 and ((e == "s" and k == "s") or (e == "s" and m == "
     print("Acudir a urgencias a evaluación")
     print("Tomar RT-PCR")
 
+    # Clasif 3
     if count_riesgo >= 3:
         print("Según el Riesgo Personal calculado recomendamos tomar Rx Y Laboratorio")
     else:
@@ -201,7 +219,7 @@ if probabilidad_pretest > 3 and ((e == "s" and k == "s") or (e == "s" and m == "
     exit
 
 # Clasificador Síntomas Específicos#
-# Si tiene Sintomas Especificos entonces Agendar Hora y tomar PCR #
+# Si tiene 1 que no sea disnea ni fiebre. Sintomas Especificos entonces Agendar Hora y tomar PCR #
 if e == "s":
     count += 1
 else:
@@ -223,6 +241,7 @@ else:
     exit
 
 # Input Síntomas Inespecíficos#
+
 g = input("tiene Mialgias? ")
 h = input("tiene Cefalea? ")
 i = input("tiene Calofríos? ")
