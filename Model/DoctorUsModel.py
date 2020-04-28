@@ -39,34 +39,40 @@ class DoctorUsModel:
     def updateCompleteInfo(self, key, d):
         self.userModel[key] = d
 
-    def calculateScore(self, ID, score, dict_weigths):
+    def calculateScore(self, ID, dict_weigths):
+        score_cache = 0
         for key, value in self.userModel[ID].items():
             if value == yes:
-                score += dict_weigths[key]
+                score_cache += dict_weigths[key]
+        return score_cache
 
     # Add each affirmative response according his weight
     def calculateExpositionScore(self):
-        self.calculateScore(ID_covid, self.exposition_score, score_exposition)
+        self.exposition_score = self.calculateScore(ID_covid, dict_weights_exposition)
+
 
     # Same as above. For ECNT, each one is added.
     # TODO: generar un vector de pesos para las distintas ENCT. Aca se considera el mismo peso para todas
     def calculateRiskScore(self):
-        age_score = (score_risk[age] if int(self.userModel[ID_basicInfo][age]) >= MIN_AGE_RISK else 0)
-        tbq_score = (score_risk[tbq] if self.userModel[ID_habits][tbq] == yes else 0)
-        oh_score = (score_risk[oh] if self.userModel[ID_habits][oh] == yes else 0)
-        ecnt_score = score_risk[ID_ecnt] * len(self.userModel[ID_ecnt])
-
-        self.risk_score = age_score + tbq_score + oh_score + ecnt_score
+        try:
+            age_score = (dict_weight_risk[age] if int(self.userModel[ID_basicInfo][age]) >= MIN_AGE_RISK else 0)
+            tbq_score = (dict_weight_risk[tbq] if self.userModel[ID_habits][tbq] == yes else 0)
+            oh_score = (dict_weight_risk[oh] if self.userModel[ID_habits][oh] == yes else 0)
+            ecnt_score = dict_weight_risk[ID_ecnt] * len(self.userModel[ID_ecnt])
+            self.risk_score = age_score + tbq_score + oh_score + ecnt_score
+        except ValueError:
+            self.risk_score = 0
 
     # TODO: Revisar, me hace sentido que sea así en vez de multiplicar, pues ambos casos son peligrosos por si solos
     def calculatePreTestScore(self):
         self.pretest_score = max(self.risk_score, self.exposition_score)
 
     def calculateSpecificSymptomsScore(self):
-        self.calculateScore(ID_spec_symp, self.specificSymptoms_score, score_spec_sympt)
+        self.specificSymptoms_score = self.calculateScore(ID_spec_symp, dict_weight_specSympt)
+
 
     def calculateInSpecificSymptomsScore(self):
-        self.calculateScore(ID_inspec_symp, self.inspecificSymptoms_score, score_inspec_sympt)
+        self.inspecificSymptoms_score = self.calculateScore(ID_inspec_symp, dict_weight_inSpecSymp)
 
     def calculateTotalScore(self):
         self.total_score = self.exposition_score + self.risk_score + self.specificSymptoms_score + self.inspecificSymptoms_score
@@ -74,12 +80,15 @@ class DoctorUsModel:
     # If has any symptoms or disnea bigger than MIN_DISNEA_RISK_VALUE
     def checkUrgency(self):
         for key, value in self.userModel[ID_urgency].items():
-            if key == disnea and int(self.userModel[ID_urgency][disnea]) >= MIN_DISNEA_RISK_VALUE:
-                self.urgency = True
-                return True
-            elif self.userModel[ID_urgency][key] == yes:
-                self.urgency = True
-                return True
+            try:
+                if key == disnea and int(self.userModel[ID_urgency][disnea]) >= MIN_DISNEA_RISK_VALUE:
+                    self.urgency = True
+                    return True
+                elif self.userModel[ID_urgency][key] == yes:
+                    self.urgency = True
+                    return True
+            except ValueError:
+                break
         self.urgency = False
         return False
 
@@ -97,8 +106,17 @@ class DoctorUsModel:
     def getRiskScore(self):
         return self.risk_score
 
+    def getExpositionScore(self):
+        return self.exposition_score
+
     def getPreTestScore(self):
         return self.pretest_score
+
+    def getSpecSymp(self):
+        return self.specificSymptoms_score
+
+    def getInSpecSymp(self):
+        return self.inspecificSymptoms_score
 
     def getTotalScore(self):
         return self.total_score
@@ -109,4 +127,4 @@ class DoctorUsModel:
                 for internKey in self.userModel[key]:
                     print("{0} , {1}".format(internKey, self.userModel[key][internKey]))
             else:
-                print(self.userModel[key])
+                print("{0} : {1}".format(key,self.userModel[key]))

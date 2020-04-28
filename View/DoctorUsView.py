@@ -1,6 +1,6 @@
 from Config.basics import *
 from View.Chat.StartChat import helloWorld, legalInfo
-
+from Model.DoctorUsModel import DoctorUsModel
 
 class DoctorUsView:
     """
@@ -42,6 +42,8 @@ class DoctorUsView:
             return answer.split(" ")
 
     def alertEmergency(self):
+        print(blankSpace)
+        print(textSeparator)
         print("Llamar al 131")
         print("Esto es una urgencia vital")
         print("Llamando a sus familiares")
@@ -95,3 +97,31 @@ class DoctorUsView:
         print("Dependiendo de la evaluación de su médico")
         print("Debe hacerse test de RT-PCR")
 
+    def printModel(self, model: DoctorUsModel):
+        if input("¿Quieres un resumen de la información? ({0}/{1}) ".format(yes, no)) == yes:
+            print(blankSpace)
+            print("Summary")
+            print(blankSpace)
+            dict_userInfo = model.userModel
+            for key in dict_userInfo:
+                print(blankSpace)
+                if isinstance(dict_userInfo[key], dict) and len(dict_userInfo[key].values()) > 0:
+                    print(key)
+                    print(blankSpace)
+                    for internKey in dict_userInfo[key]:
+                        print("{0} : {1}".format(internKey, dict_userInfo[key][internKey]))
+                else:
+                    print("{0} : {1}".format(key, dict_userInfo[key]))
+                print(startSeparator)
+            print(blankSpace)
+            print(blankSpace)
+            print("Puntaje Exposicion : ", model.getExpositionScore())
+            print("Puntaje Riesgo : ", model.getRiskScore())
+            print("-------------------------")
+            print("Puntaje PreTest : ", model.getPreTestScore())
+            print(blankSpace)
+            print("Puntaje Sintomas Especificos : ", model.getSpecSymp())
+            print("Puntaje Sintomas Inespecificos : ", model.getInSpecSymp())
+            print("--------------------------")
+            print(blankSpace)
+            print("Puntaje Total : ", model.getTotalScore())

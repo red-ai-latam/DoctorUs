@@ -15,3 +15,6 @@ if __name__ == "__main__":
     # Start program
     drUs.run()
 
+    # Print model
+    drUs.printModel()
+

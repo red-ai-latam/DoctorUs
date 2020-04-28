@@ -45,6 +45,7 @@ class DoctorUsController:
                 # Check if user has any symptoms
                 if self.view.hasSymptoms():
                     self.getInfo(ID_spec_symp, dict_specSymptoms_questions)
+                    self.model.calculateSpecificSymptomsScore()
 
                     # If has some combination of specific symptoms
                     if self.model.checkSpecificSymptoms():
@@ -55,6 +56,8 @@ class DoctorUsController:
                     else:
                         # Inspecific symptoms
                         self.getInfo(ID_inspec_symp, dict_inSpecSymptoms_questions)
+                        self.model.calculateInSpecificSymptomsScore()
+                        self.model.calculateTotalScore()
 
                         # Total Score
                         if self.model.total_score >= INSPECIFIC_SYMPTOMS_THRESHOLD:
@@ -71,6 +74,7 @@ class DoctorUsController:
                         self.view.alertPreTest()
                     else:
                         self.view.alertLowProb()
+            self.model.calculateTotalScore()
 
         else:
             print("Gracias, adios :c")
@@ -91,4 +95,6 @@ class DoctorUsController:
 
     # Just to debug
     def printModel(self):
-        self.model.printModel()
+        print(blankSpace)
+        print(textSeparator)
+        self.view.printModel(self.model)

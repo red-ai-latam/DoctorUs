@@ -16,9 +16,9 @@
 
 
 from Config.Questions.userCovidQuestions import *
-score_exposition = {lockdown : 1,
-                    travels : 3,
-                    be_in_touch : 5}
+dict_weights_exposition = {lockdown : 1,
+                           travels : 3,
+                           be_in_touch : 5}
 
 
 
@@ -46,10 +46,10 @@ score_exposition = {lockdown : 1,
 from Config.Questions.userProfileQuestions import *
 from Config.Questions.userMedicalProfileQuestions import *
 
-score_risk = {age : 5,
-              tbq : 1,
-              oh : 1,
-              ID_ecnt : 1}
+dict_weight_risk = {age : 5,
+                    tbq : 1,
+                    oh : 1,
+                    ID_ecnt : 1}
 
 # Specific Symptoms
 #
@@ -59,10 +59,10 @@ score_risk = {age : 5,
 
 from Config.Questions.userSpecSymptoms import *
 
-score_spec_sympt = {fever: 5,
-                    cough: 3,
-                    anosmia: 1
-                    }
+dict_weight_specSympt = {fever: 5,
+                         cough: 3,
+                         anosmia: 1
+                         }
 
 # Inspecific Symptoms
 #
@@ -75,9 +75,9 @@ score_spec_sympt = {fever: 5,
 
 from Config.Questions.userInSpecSymptoms import *
 
-score_inspec_sympt = {mialgia: 1,
-                      cefalea: 1,
-                      escalofrios: 1,
-                      diarrea: 1,
-                      odinofagia: 1,
-                      skill_injury: 1}
+dict_weight_inSpecSymp = {mialgia: 1,
+                          cefalea: 1,
+                          escalofrios: 1,
+                          diarrea: 1,
+                          odinofagia: 1,
+                          skill_injury: 1}
