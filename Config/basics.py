@@ -8,6 +8,3 @@ textSeparator = "---------------------------------------------------"
 blankSpace = " "
 
 
-# Keyword to separete between dict and list
-kwd_list = 'List'
-

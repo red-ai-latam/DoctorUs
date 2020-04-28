@@ -196,11 +196,6 @@ print("Ahora le preguntaremos por síntnomas específicos")
 print("---------------------------------------------------")
 
 
-
-
-#TODO:
-
-
 # Input Sintomas Específicos#
 e = input("tiene Fiebre sobre 38ºC? ")
 k = input("tiene Tos ? ")
