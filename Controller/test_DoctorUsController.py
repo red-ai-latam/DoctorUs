@@ -9,6 +9,7 @@ from Config.Questions.userSpecSymptoms import *
 from Config.Questions.userInSpecSymptoms import *
 from Model.DoctorUsModel import DoctorUsModel
 from View.DoctorUsView import DoctorUsView
+from Config.basics import *
 
 # Aqui cambiar edad
 
@@ -28,20 +29,15 @@ dict_medicalHistory_questions = {cx: "n",
                                  atb: "n"
                                  }
 
-
-
 # Agregar ECNT, alergias y farmacos
 list_ECNT = ['asd', 'asd', 'asd']
 list_allergies = ['asd']
 list_legalDrugs = ['asd']
 
-
-
 # Aqui cambiar exposición
-dict_covid_questions = {lockdown : "n",
-                        travels : "n",
-                        be_in_touch : "n"}
-
+dict_covid_questions = {lockdown: "n",
+                        travels: "n",
+                        be_in_touch: "n"}
 
 # Aqui cambiar datos de urgencia
 dict_urgency_questions = {chest_pain: "n",
@@ -56,27 +52,27 @@ dict_specSymptoms_questions = {fever: "n",
                                anosmia: "s"
                                }
 # Aqui cambiar sintomas inespecificos
-dict_inSpecSymptoms_questions = {mialgia : "s",
-                                 cefalea : "n",
-                                 escalofrios : "s",
-                                 diarrea : "n",
-                                 odinofagia : "s",
-                                 skill_injury : "n"}
-
+dict_inSpecSymptoms_questions = {mialgia: "s",
+                                 cefalea: "n",
+                                 escalofrios: "s",
+                                 diarrea: "n",
+                                 odinofagia: "s",
+                                 skill_injury: "n"}
 
 view = DoctorUsView()
 
 model = DoctorUsModel()
-model.userModel[ID_basicInfo] = dict_info_questions
-model.userModel[ID_habits] = dict_habits_questions
-model.userModel[ID_medicalHistory] = dict_medicalHistory_questions
+model.userModel[ID_BASIC_INFO] = dict_info_questions
+model.userModel[ID_HABITS] = dict_habits_questions
+model.userModel[ID_MEDICAL_HISTORY] = dict_medicalHistory_questions
 model.userModel[ID_ecnt] = list_ECNT
 model.userModel[ID_allergies] = list_allergies
 model.userModel[ID_legalDrugs] = list_legalDrugs
-model.userModel[ID_covid] = dict_covid_questions
-model.userModel[ID_urgency] = dict_urgency_questions
-model.userModel[ID_spec_symp] = dict_specSymptoms_questions
-model.userModel[ID_inspec_symp] = dict_inSpecSymptoms_questions
+model.userModel[ID_COVID] = dict_covid_questions
+model.userModel[ID_URGENCY] = dict_urgency_questions
+model.userModel[ID_SPEC_SYMP] = dict_specSymptoms_questions
+model.userModel[ID_IN_SPEC_SYMP] = dict_inSpecSymptoms_questions
+
 
 class TestDoctorUsController(TestCase):
     def test_urgency(self):
@@ -87,16 +83,13 @@ class TestDoctorUsController(TestCase):
                                   conscience: "n",
                                   blue: "n"
                                   }
-        model.userModel[ID_urgency] = dict_urgency_questions
+        model.userModel[ID_URGENCY] = dict_urgency_questions
 
         self.assertEqual(model.checkUrgency(), True)
-
-
 
     def test_complete(self):
 
         # Set
-
 
         # Profile info and risk score from profile
         model.calculateRiskScore()
@@ -106,9 +99,8 @@ class TestDoctorUsController(TestCase):
         model.calculatePreTestScore()
         self.assertEqual(model.getPreTestScore(), 10)
 
-
         if model.checkUrgency():
-            view.alertEmergency()
+            view.alertUser(ID_URGENCY)
             self.assertEqual(model.checkUrgency(), True)
 
         else:
@@ -116,23 +108,21 @@ class TestDoctorUsController(TestCase):
             if True:
                 # If has some combination of specific symptoms
                 if model.checkSpecificSymptoms():
-                    view.alertSpecificSymptoms()
+                    view.alertUser(ID_SPEC_SYMP)
                     # Besides, if has high risk score than MIN_RISK_SCORE_RX
                     if model.getRiskScore() >= MIN_RISK_SCORE_RX:
-                        view.alertRx()
-                        self.assertGreaterEqual(model.getRiskScore() , MIN_RISK_SCORE_RX)
+                        view.alertUser(ID_ALERT_RX)
+                        self.assertGreaterEqual(model.getRiskScore(), MIN_RISK_SCORE_RX)
                 else:
                     # Total Score
                     self.assertGreaterEqual(model.total_score, INSPECIFIC_SYMPTOMS_THRESHOLD)
                     if model.total_score >= INSPECIFIC_SYMPTOMS_THRESHOLD:
 
-                        view.alertInspecificSymptoms()
-                    elif model.total_score >= MIN_PROB_PRE_TEST and model.total_score <= INSPECIFIC_SYMPTOMS_THRESHOLD:
+                        view.alertUser(ID_IN_SPEC_SYMP)
+                    elif MIN_PROB_PRE_TEST <= model.total_score <= INSPECIFIC_SYMPTOMS_THRESHOLD:
                         self.assertGreaterEqual(model.total_score, MIN_PROB_PRE_TEST)
                         self.assertLessEqual(model.total_score, INSPECIFIC_SYMPTOMS_THRESHOLD)
-                        view.alertTelemedicine()
+                        view.alertUser(ID_ALERT_TELEMEDICINE)
                     else:
                         self.assertLess(model.total_score, MIN_PROB_PRE_TEST)
-                        view.alertLowProb()
-
-
+                        view.alertUser(ID_ALERT_LOWPROB)

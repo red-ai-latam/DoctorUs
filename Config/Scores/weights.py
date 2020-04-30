@@ -6,8 +6,6 @@
 # 0 = No importance
 """
 
-
-
 # Exposition
 
 # lockdown = "Comuna en cuarentena"
@@ -16,12 +14,10 @@
 
 
 from Config.Questions.userCovidQuestions import *
-dict_weights_exposition = {lockdown : 1,
-                           travels : 3,
-                           be_in_touch : 5}
 
-
-
+dict_weights_exposition = {lockdown: 1,
+                           travels: 3,
+                           be_in_touch: 5}
 
 # Risk
 
@@ -46,10 +42,10 @@ dict_weights_exposition = {lockdown : 1,
 from Config.Questions.userProfileQuestions import *
 from Config.Questions.userMedicalProfileQuestions import *
 
-dict_weight_risk = {age : 5,
-                    tbq : 1,
-                    oh : 1,
-                    ID_ecnt : 1}
+dict_weight_risk = {age: 5,
+                    tbq: 1,
+                    oh: 1,
+                    ID_ecnt: 1}
 
 # Specific Symptoms
 #

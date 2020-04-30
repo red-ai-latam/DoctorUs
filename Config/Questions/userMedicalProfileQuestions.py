@@ -1,10 +1,9 @@
-from Config.basics import no
 
 # ECNT
 
 ID_ecnt = 'ECNT (enfermedades crónicas)'
 
-ecnt_questions = "Ingrese ECNT que posea (separadas por un espacio). Si no posee, ingresar {0} ".format(no)
+ecnt_questions = "Ingrese ECNT que posea (separadas por una coma) "
 
 "---------------------------------------------------------------------------------------------------------------------"
 "---------------------------------------------------------------------------------------------------------------------"
@@ -19,7 +18,7 @@ ecnt_questions = "Ingrese ECNT que posea (separadas por un espacio). Si no posee
 
 ID_allergies = 'alergias '
 
-allergies_questions = "Ingrese alergias que posea (separadas por un espacio). Si no posee, ingresar {0} ".format(no)
+allergies_questions = "Ingrese alergias que posea (separadas por una coma) "
 "---------------------------------------------------------------------------------------------------------------------"
 "---------------------------------------------------------------------------------------------------------------------"
 "---------------------------------------------------------------------------------------------------------------------"
@@ -33,7 +32,7 @@ allergies_questions = "Ingrese alergias que posea (separadas por un espacio). Si
 
 ID_legalDrugs = 'fármacos'
 
-legalDrugs_questions = "Ingrese fármacos que consuma (separados por un espacio). Si no posee, ingresar {0} ".format(no)
+legalDrugs_questions = "Ingrese fármacos que consuma (separados por una coma) "
 
 "---------------------------------------------------------------------------------------------------------------------"
 "---------------------------------------------------------------------------------------------------------------------"

@@ -1,7 +1,6 @@
 from unittest import TestCase
 
 from Config.Questions.userProfileQuestions import *
-from Config.Scores.threshold import MIN_RISK_SCORE_RX, INSPECIFIC_SYMPTOMS_THRESHOLD, MIN_PROB_PRE_TEST
 from Config.Questions.userMedicalProfileQuestions import *
 from Config.Questions.userCovidQuestions import *
 from Config.Questions.userUrgencyQuestions import *
@@ -9,6 +8,7 @@ from Config.Questions.userSpecSymptoms import *
 from Config.Questions.userInSpecSymptoms import *
 from Model.DoctorUsModel import DoctorUsModel
 from View.DoctorUsView import DoctorUsView
+from Config.basics import *
 
 # Aqui cambiar edad
 
@@ -28,20 +28,15 @@ dict_medicalHistory_questions = {cx: "n",
                                  atb: "n"
                                  }
 
-
-
 # Agregar ECNT, alergias y farmacos
 list_ECNT = []
 list_allergies = []
 list_legalDrugs = []
 
-
-
 # Aqui cambiar exposición
-dict_covid_questions = {lockdown : "n",
-                        travels : "n",
-                        be_in_touch : "s"}
-
+dict_covid_questions = {lockdown: "n",
+                        travels: "n",
+                        be_in_touch: "s"}
 
 # Aqui cambiar datos de urgencia
 dict_urgency_questions = {chest_pain: "n",
@@ -56,27 +51,26 @@ dict_specSymptoms_questions = {fever: "n",
                                anosmia: "n"
                                }
 # Aqui cambiar sintomas inespecificos
-dict_inSpecSymptoms_questions = {mialgia : "n",
-                                 cefalea : "n",
-                                 escalofrios : "n",
-                                 diarrea : "n",
-                                 odinofagia : "n",
-                                 skill_injury : "n"}
-
+dict_inSpecSymptoms_questions = {mialgia: "n",
+                                 cefalea: "n",
+                                 escalofrios: "n",
+                                 diarrea: "n",
+                                 odinofagia: "n",
+                                 skill_injury: "n"}
 
 view = DoctorUsView()
 
 model = DoctorUsModel()
-model.userModel[ID_basicInfo] = dict_info_questions
-model.userModel[ID_habits] = dict_habits_questions
-model.userModel[ID_medicalHistory] = dict_medicalHistory_questions
+model.userModel[ID_BASIC_INFO] = dict_info_questions
+model.userModel[ID_HABITS] = dict_habits_questions
+model.userModel[ID_MEDICAL_HISTORY] = dict_medicalHistory_questions
 model.userModel[ID_ecnt] = list_ECNT
 model.userModel[ID_allergies] = list_allergies
 model.userModel[ID_legalDrugs] = list_legalDrugs
-model.userModel[ID_covid] = dict_covid_questions
-model.userModel[ID_urgency] = dict_urgency_questions
-model.userModel[ID_spec_symp] = dict_specSymptoms_questions
-model.userModel[ID_inspec_symp] = dict_inSpecSymptoms_questions
+model.userModel[ID_COVID] = dict_covid_questions
+model.userModel[ID_URGENCY] = dict_urgency_questions
+model.userModel[ID_SPEC_SYMP] = dict_specSymptoms_questions
+model.userModel[ID_IN_SPEC_SYMP] = dict_inSpecSymptoms_questions
 
 
 class TestDoctorUsModel(TestCase):
@@ -87,12 +81,11 @@ class TestDoctorUsModel(TestCase):
         dict_covid_questions = {lockdown: "s",
                                 travels: "n",
                                 be_in_touch: "n"}
-        model.userModel[ID_covid] = dict_covid_questions
+        model.userModel[ID_COVID] = dict_covid_questions
 
         model.calculateExpositionScore()
 
         self.assertEqual(model.getExpositionScore(), 1)
-
 
     def test_calculate_risk_score(self):
         self.fail()
