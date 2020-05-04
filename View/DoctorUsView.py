@@ -1,5 +1,6 @@
-from .GUI.GUI import *
-from Model.DoctorUsModel import DoctorUsModel
+from . import start_conversation_text
+import PySimpleGUI as sg
+from Utils import conversation
 
 
 class DoctorUsView:
@@ -7,75 +8,107 @@ class DoctorUsView:
 
     """
 
-    def __init__(self):
-        pass
+    def __init__(self, controller):
+        self.init_program = self.hello_world()
+        self.controller = controller
 
-    # Start conversation. Ask for legal conditions
-    def startChat(self):
-        return helloWorld() and legalInfo()
+    def hello_world(self):
+        event = sg.popup_ok_cancel(start_conversation_text.START_TEXT, title='Doctor US')
+        if event == 'Cancel':  # quit if exit button
+            return False
+        elif event == 'OK':
+            return True
+
+    # Ask for legal conditions
+    def accept_legal_info(self):
+        event = sg.popup_scrolled(start_conversation_text.LEGAL_INFO, yes_no=True, title=start_conversation_text.TITLE)
+        if event == 'No':  # quit if exit button
+            return False
+        elif event == 'Yes':
+            return True
 
     # Ask questions in dict_questions. Return answers as a dict of text
-    def getTextAnswers(self, ID_questions, dict_questions):
-        event, values = inputTextWindow(ID_questions, dict_questions)
-        if event:
-            return values
-        else:
+    def ask_user_profile(self):
+        layout = []
+        for k, v in start_conversation_text.dict_info_questions.items():
+            format_ = [sg.Text(v, size=(25, 1)),
+                       sg.InputText(key=k, size=(30, 1))]
+            layout.append(format_)
+        layout.append([sg.Button('ENVIAR', bind_return_key=True),
+                       sg.Button('SALIR')])
+
+        window = sg.Window(title='Antecedentes', layout=layout)
+        event, values = window.read()
+        if event == 'SALIR':  # quit if exit button
+            window.close()
             raise Exception
+        elif event == 'ENVIAR':
+            window.close()
+            self.controller.save_user_profile(values)
 
-    def getBinaryAnswers(self, ID_questions, dict_questions):
-        event, values = yesNoWindow(ID_questions, dict_questions)
-        if event:
-            return values
-        else:
-            raise Exception
+    # TODO : hacerlo bonito. Ver como evitar que bloquee la terminal al usar Output, probar logging
+    def chatbox(self, age, sex):
+        sg.theme('Dark Blue 3')
+        layout = [[sg.Text('DoctorUs dice', size=(20, 1))],
+                  [sg.Output(size=(70, 20), font=('Helvetica 12'), key='-OUTPUT', )],
+                  [sg.Multiline("Presiona PARTIR para empezar", size=(20, 2), font=('Helvetica 10'), key='-IN-',
+                                do_not_clear=False, enter_submits=True),
+                   sg.Button('PARTIR', bind_return_key=True),
+                   sg.Button('LIMPIAR'),
+                   sg.Button('SALIR')]]
 
-    def getFuzzyAnswers(self, ID_questions, dict_questions):
-        event, values = slideBarWindow(ID_questions, dict_questions)
-        if event:
-            return values
-        else:
-            raise Exception
+        window = sg.Window('DoctorUs Chatbot', layout, font=('Helvetica', ' 13'), default_button_element_size=(8, 2))
 
-    def alertUser(self, ID_alert):
-        if ID_alert == ID_URGENCY:
-            generalDisplayWindos(URGENCY_ALERT_TEXT)
-        elif ID_alert == ID_SPEC_SYMP:
-            generalDisplayWindos(SPECIFIC_SYMPTOMS_TEXT_ALERT)
-        elif ID_alert == ID_ALERT_RX:
-            generalDisplayWindos(ALERT_RX_TEXT)
-        elif ID_alert == ID_IN_SPEC_SYMP:
-            generalDisplayWindos(INESPECIFIC_SYMPTOMS_ALERT_TEXT)
-        elif ID_alert == ID_ALERT_TELEMEDICINE:
-            generalDisplayWindos(TELEMEDICINE_ALERT_TEXT)
-        elif ID_alert == ID_ALERT_LOWPROB:
-            generalDisplayWindos(LOW_PROBABILITY_ALERT_TEXT)
-        elif ID_alert == ID_ALERT_PRE_TEST:
-            generalDisplayWindos(PRE_TEST_ALERT_TEXT)
+        event, value = window.read()
+        if event == 'SALIR':
+            raise NotImplementedError("EXIT PROGRAM")
+        elif event == 'LIMPIAR':
+            window['-OUTPUT-'].update('')
+        elif event == 'PARTIR':
+            window['-IN-'].update('')
+            try:
+                evidence, diagnoses, triage = conversation.conduct_interview_gui(evidence=[], age=age, sex=sex,
+                                                                                 windows=window)
+                self.controller.save_user_diagnosis(evidence, diagnoses, triage)
 
-    def hasSymptoms(self):
-        return generalYesNoWindows(SYMPTOMS_TEXT_QUESTION)
+            except NotImplementedError:
+                raise NotImplementedError("EXIT PROGRAM")
+            except Exception as err:
+                raise err
+            finally:
+                window.close()
 
-    def printModel(self, model: DoctorUsModel):
-        if input("¿Quieres un resumen de la información? ({0}/{1}) ".format(YES, NO)) == YES:
+    #TODO: Doesnt Working
+    def show_summary(self, evidence, diagnoses, triage):
+        # List of evidences
+        layout_evidence = []
+        if evidence:
+            for i, ev in enumerate(evidence):
+                layout_evidence += [sg.Text(f'{i + 1}. '), sg.Text(ev)],
 
-            print("Summary")
+        # Triage results
+        layout_diagnoses = []
+        if diagnoses:
+            for i, diag in enumerate(diagnoses):
+                layout_diagnoses += [sg.Text(f'{i + 1}. '), sg.Text(diag["name"]), sg.Text(diag["probability"])],
 
-            dict_userInfo = model.userModel
-            for key in dict_userInfo:
+        layout_triage = []
+        if triage:
+            layout_triage = [
+                [sg.Text("Resumen")], [sg.Text(triage['description'])],
+                [sg.Text("Recomendacion ")], [sg.Text(triage['label'])],
+            ]
 
-                if isinstance(dict_userInfo[key], dict) and len(dict_userInfo[key].values()) > 0:
-                    print(key)
+        layout_diagnoses.append(layout_triage)
 
-                    for internKey in dict_userInfo[key]:
-                        print("{0} : {1}".format(internKey, dict_userInfo[key][internKey]))
-                else:
-                    print("{0} : {1}".format(key, dict_userInfo[key]))
+        # Tabs
+        layout = [[sg.TabGroup([[sg.Tab('Triage', layout_diagnoses), sg.Tab('Evidencia', layout_evidence)]])],
+                  [[sg.Button('GUARDAR'), sg.Button('SALIR')]]]
 
-            print("Puntaje Exposicion : ", model.getExpositionScore())
-            print("Puntaje Riesgo : ", model.getRiskScore())
-            print("-------------------------")
-            print("Puntaje PreTest : ", model.getPreTestScore())
-            print("Puntaje Sintomas Especificos : ", model.getSpecSymp())
-            print("Puntaje Sintomas Inespecificos : ", model.getInSpecSymp())
-            print("--------------------------")
-            print("Puntaje Total : ", model.getTotalScore())
+        window = sg.Window('Resultados', layout, font=('Helvetica', ' 13'), default_button_element_size=(8, 2))
+
+        event, value = window.read()
+        if event == 'SALIR':
+            window.close()
+        elif event == 'GUARDAR':
+            window.close()
