@@ -80,35 +80,22 @@ class DoctorUsView:
 
     #TODO: Doesnt Working
     def show_summary(self, evidence, diagnoses, triage):
+        layout = []
         # List of evidences
-        layout_evidence = []
         if evidence:
-            for i, ev in enumerate(evidence):
-                layout_evidence += [sg.Text(f'{i + 1}. '), sg.Text(ev)],
-
-        # Triage results
-        layout_diagnoses = []
-        if diagnoses:
-            for i, diag in enumerate(diagnoses):
-                layout_diagnoses += [sg.Text(f'{i + 1}. '), sg.Text(diag["name"]), sg.Text(diag["probability"])],
-
-        layout_triage = []
+            layout.append([sg.Text("Evidencia")])
+            cont = 0
+            for ev in (evidence):
+                if ev['choice_id'] == 'present':
+                    output = [sg.Text(f'{cont + 1}. '), sg.Text(ev['name'])]
+                    layout.append(output)
+                    cont +=1
         if triage:
-            layout_triage = [
-                [sg.Text("Resumen")], [sg.Text(triage['description'])],
-                [sg.Text("Recomendacion ")], [sg.Text(triage['label'])],
-            ]
-
-        layout_diagnoses.append(layout_triage)
-
-        # Tabs
-        layout = [[sg.TabGroup([[sg.Tab('Triage', layout_diagnoses), sg.Tab('Evidencia', layout_evidence)]])],
-                  [[sg.Button('GUARDAR'), sg.Button('SALIR')]]]
+            layout.append([sg.Text("Resumen"), sg.Text(triage['description'])])
+            layout.append([sg.Text("Recomendacion "), sg.Text(triage['label'])])
 
         window = sg.Window('Resultados', layout, font=('Helvetica', ' 13'), default_button_element_size=(8, 2))
 
         event, value = window.read()
-        if event == 'SALIR':
-            window.close()
-        elif event == 'GUARDAR':
+        if event == 'OK':
             window.close()
