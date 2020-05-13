@@ -3,7 +3,7 @@ import uuid
 
 infermedica_url = 'https://api.infermedica.com/covid19/{}'
 
-auth_string = 'f770ff52:ccedb8d1ebfbc89abd48aab8a5359185'
+auth_string = '********:**************'
 language_model = 'infermedica-es-xl'
 case_id = uuid.uuid4().hex
 
