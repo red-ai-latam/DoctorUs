@@ -12,7 +12,7 @@ class BasicUserModel:
         self.actual_diagnosis = infermedica_api.Diagnosis
 
         # Infermedica API configuration
-        infermedica_api.configure(app_id="f770ff52", app_key="ccedb8d1ebfbc89abd48aab8a5359185",
+        infermedica_api.configure(app_id="*****", app_key="****",
                                   model=api_model,
                                   api_version=api_version)
 
