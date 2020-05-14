@@ -4,14 +4,6 @@ MIN_AGE = 12
 MAX_AGE = 130
 
 SEX_NORM = {
-    "male": "male",
-    "m": "male",
-    "man": "male",
-    "boy": "male",
-    "female": "female",
-    "f": "female",
-    "woman": "female",
-    "girl": "female",
     "hombre": "male",
     "mujer": "female",
     "femenino" : "female",
@@ -19,11 +11,7 @@ SEX_NORM = {
     "varon": "male",
     "masculino" : "male",
     "señor": "male",
-    "senhor": "male",
-    "senor": "male",
     "señora": "female",
-    "senora": "female",
-    "senhora": "female",
 }
 
 ANSWER_NORM = {
@@ -52,8 +40,3 @@ ANSWER_NORM = {
     "omita": "unknown",
     "salta": "unknown",
 }
-
-USER_PROFILE = 'Perfil Usuario'
-USER_EVIDENCE = 'Evidencia registrada'
-USER_DIAGNOSES = 'Diagnostico'
-USER_TRIAGE = 'Triage'
