@@ -1,4 +1,4 @@
-from Utils.Exceptions.CustomExceptions import AmbiguousAnswerException
+from src.utils.exceptions import AmbiguousAnswerException
 import re
 
 def extract_sex(text, mapping):

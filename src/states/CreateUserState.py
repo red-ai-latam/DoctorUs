@@ -1,14 +1,14 @@
-from InterviewFlow.states.BaseState import BaseState, EventData
-from InterviewFlow.parse import extract_age,extract_keywords,extract_sex
-from Utils.Exceptions.CustomExceptions import AmbiguousAnswerException
-from Utils.constants import SEX_NORM, MAX_AGE, MIN_AGE
+from src.states.BaseState import BaseState, EventData
+from src.utils.parse import extract_age, extract_sex
+from src.utils.exceptions import AmbiguousAnswerException
+from src.utils.constants import SEX_NORM, MAX_AGE, MIN_AGE
 
 #TODO: arreglar los printeos de excepciones, unificar
 
 class CreateUserState(BaseState):
 
     def __init__(self, name):
-        super().__init__(name=name, on_enter= [self.ask_for_info], on_exit= [self._say_thanks])
+        super().__init__(name=name, on_enter= [self._ask_for_info], on_exit= [self._say_thanks])
 
     # TODO: Acá serviria algo de NLP, sino cuestionario
     def handle(self, event: EventData):
@@ -37,7 +37,7 @@ class CreateUserState(BaseState):
             user_model.set_sex_and_age(sex=sex, age=age)
             self.set_change_state(True)
 
-    def ask_for_info(self, event : EventData):
+    def _ask_for_info(self, event : EventData):
         #TODO: Adecuar a formato de mensaje
         text = "Favor indicar sexo biologico "
         event.kwargs["response"].append(text)

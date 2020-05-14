@@ -1,8 +1,8 @@
-from InterviewFlow.states.BaseState import BaseState, EventData
-from InterviewFlow.BasicUserModel import BasicUserModel
-from Utils.constants import ANSWER_NORM
-from InterviewFlow.parse import extract_decision
-from Utils.Exceptions.CustomExceptions import AmbiguousAnswerException
+from src.states.BaseState import BaseState, EventData
+from src.models import BasicUserModel
+from src.utils.constants import ANSWER_NORM
+from src.utils.parse import extract_decision
+from src.utils.exceptions import AmbiguousAnswerException
 
 
 class DiagnosisState(BaseState):
@@ -11,7 +11,7 @@ class DiagnosisState(BaseState):
     """
 
     def __init__(self, name):
-        super().__init__(name=name, on_enter=[self.start_interview])
+        super().__init__(name=name, on_enter=[self.start_interview], on_exit=[self.no_more_interview])
 
     # TODO: Parsear previamente respuesta del usuario, asegurar formato
     def handle(self, event: EventData):
@@ -23,7 +23,7 @@ class DiagnosisState(BaseState):
         if evidence:
             try:
                 for ev in evidence:
-                    user_model.add_evidence(id=ev["id"], choice=extract_decision(ev["choice_id"],ANSWER_NORM))
+                    user_model.add_evidence(id=ev["id"], choice=extract_decision(ev["choice_id"], ANSWER_NORM))
 
                 if user_model.should_stop():
                     self.set_change_state(True)
@@ -44,5 +44,17 @@ class DiagnosisState(BaseState):
         user_model: BasicUserModel = event.kwargs["user_model"]
         response = event.kwargs["response"]
 
-        response.append("Empieza la entrevista")
-        response.append(user_model.call_diagnosis())
+        text = "Empieza la entrevista !"
+
+        response.append(text)
+
+        diagosis_results = user_model.call_diagnosis()
+        response.append(diagosis_results.questions)
+
+    def no_more_interview(self, event : EventData):
+        text = " Gracias por la información! " \
+               " Hemos recopilado la suficiente información. " \
+               "A continuación se mostrarán tus resultados :" \
+               "" \
+               ""
+        event.kwargs["response"].append(text)

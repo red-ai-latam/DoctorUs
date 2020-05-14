@@ -14,7 +14,7 @@ class BaseState(State):
         super().__init__(name=name, on_exit=on_exit, on_enter=on_enter)
         self.change_state = False
 
-    # Wrapper to call method in each state. Override it
+    # Wrapper to call handle method in each state. Override it
     # Handle request send by user
     @staticmethod
     def static_handle(event: EventData):
@@ -34,3 +34,12 @@ class BaseState(State):
 
     def set_change_state(self, b):
         self.change_state = b
+
+    def reset_data(self):
+        """
+        reset data for new interview
+
+        :param kwargs:
+        :return:
+        """
+        self.set_change_state(False)
